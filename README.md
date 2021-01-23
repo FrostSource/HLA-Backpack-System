@@ -32,8 +32,16 @@ When you want to disallow the player from retrieving a specific item from their 
 
 This can be used to define an area in your map where the player can take the item out using a **trigger_multiple** and the ouputs **OnStartTouch** and **OnEndTouch** (see the example prefab for this usage.)
 
-### All functions that can be called via I/O
+### All I/O hooks
 ##### Input to @backpack_system:
+* **Input > CallScriptFunction > DisableAllBackpackStorage**
+*Disabled backpack storage of any item, globally.*
+* **Input > CallScriptFunction > EnableAllBackpackStorage**
+*Enables backpack storage of items. Specific items disabled will stay disabled.*
+* **Input > CallScriptFunction > DisableAllBackpackRetrieval**
+*Disables retrieval of any item, globally.*
+* **Input > CallScriptFunction > EnableAllBackpackRetrieval**
+*Enables retrieval of items. Specific items disabled will stay disabled.*
 * **Input > RunScriptCode > SetVirtualBackpackTarget(targetname)**
 *Sets the name of the entity which will the location backpack items are teleported to when stored, e.g.
 SetVirtualBackpackTarget('@virtual_backpack_target')
@@ -57,3 +65,7 @@ USE SINGLE QUOTES ONLY. USING DOUBLE QUOTES IN YOUR OUTPUT/OVERRIDE MAY CORRUPT 
 *Sets the sound that should play for this item only when taking out of backpack, e.g.
 SetRetrieveSound('Inventory.BackpackGrabItemResin')
 USE SINGLE QUOTES ONLY. USING DOUBLE QUOTES IN YOUR OUTPUT/OVERRIDE MAY CORRUPT YOUR FILE.*
+* **Output > User1**
+*Fires when the player puts this item in their backpack.*
+* **Output > User2**
+*Fires when the player retrieves this item from their backpack.*
