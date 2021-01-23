@@ -93,7 +93,6 @@ function Activate(activateType)
 end
 
 -- Returns if the given entity is touching the backpack.
----@param _ nil
 ---@param ent userdata
 function IsTouchingBackpack(ent)
     return GetBackpackTrigger():IsTouching(ent)
