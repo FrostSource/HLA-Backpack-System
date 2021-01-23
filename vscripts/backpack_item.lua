@@ -87,7 +87,7 @@ end
 function Spawn()
     -- Source seems to save/restore these outputs to they only need to be
     -- added once on spawn.
-    thisEntity:RedirectOutput('OnPlayerPickup', 'OnPlayerPickup', thisEntity)
+    thisEntity:RedirectOutput('OnPlayerUse', 'OnPlayerPickup', thisEntity)
     thisEntity:RedirectOutput('OnPhysGunDrop', 'OnPhysGunDrop', thisEntity)
 end
 
