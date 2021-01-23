@@ -26,7 +26,7 @@ Any **prop_physics** you wish the player to store in their backpack needs to hav
 *(**prop_physics** is the only entity type currently supported)*
 
 ### Taking items out
-When you want the player to be able to retrieve a specific item from their backpack you will send the input **CallScriptFunction** to that entity using I/O with a parameter override of **EnableBackpackRetrieval**.
+When you want the player to be able to retrieve a specific item(entity) from their backpack you will send the input **CallScriptFunction** to that entity using I/O with a parameter override of **EnableBackpackRetrieval**.
 
 When you want to disallow the player from retrieving a specific item from their backpack you will send the input **CallScriptFunction** to that entity using I/O with a parameter override of **DisableBackpackRetrieval**.
 
