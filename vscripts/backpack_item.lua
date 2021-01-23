@@ -3,9 +3,6 @@
 -- User variables --
 --================--
 
--- Defines how transparent item is in backpack. 0=invisible, 255=opaque (mostly for debug)
-local AlphaOnStore = 0
-
 -- The time in seconds that the item can attempt to find the backpack after being released.
 local TimeToStore = 0.8
 
@@ -15,6 +12,9 @@ local TimeToStore = 0.8
 local RetrieveSound = 'Inventory.BackpackGrabItemResin'
 local StoreSound = 'Inventory.DepositItem'
 
+-- Defines how transparent item is in backpack. 0=invisible, 255=opaque (mostly for debug)
+local AlphaOnStore = 0
+
 
 --==================--
 -- System variables --
@@ -22,7 +22,6 @@ local StoreSound = 'Inventory.DepositItem'
 
 local fInitialStoreTime = 0
 local sUniqueString = ''
-local System
 
 
 --=======================--
@@ -32,7 +31,6 @@ local System
 -- Places the item in backpack state by code without playing any sound.
 -- This can be used to store items that the player should have on level start.
 function PutInBackpack()
-    print(GetUniqueName()..' put in backpack')
     thisEntity:SetThink(function() SetInBackpack(true) end, '', 0.05)
     -- User1 is fired when item is in backpack to allow further Hammer response
     DoEntFireByInstanceHandle(thisEntity, 'FireUser1', '', 0, nil, nil)
@@ -94,12 +92,6 @@ function Spawn()
 end
 
 function Activate(activateType)
-
-    -- Finding the global backpack system entity.
-    --if UpdateSystemEntity() == nil then return nil end
-    --thisEntity:SetThink(function() print('system after short sleep '..tostring(System)) end, '', 2)
-
-
     -- Loading saved attributes to restore backpack state.
     if activateType == 2 then
         if thisEntity:Attribute_GetIntValue('IsInBackpack', 0) == 1 then
@@ -108,43 +100,31 @@ function Activate(activateType)
     end
 
     -- Debug text | This can be commented-out or deleted safely.
-    sUniqueString = DoUniqueString('')
-    print('Backpack item loaded ('..GetUniqueName()..'), InBackpack:'..tostring(GetInBackpack())..', CanStore:'..tostring(GetCanStore()))
+    --sUniqueString = DoUniqueString('')
+    --print('Backpack item loaded ('..GetUniqueName()..'), InBackpack:'..tostring(GetInBackpack())..', CanStore:'..tostring(GetCanStore()))
 
 end
 
-
-
 -- Function called by this entity on attached output with the same name.
 function OnPlayerPickup()
-    print(GetUniqueName()..' grabbed')
     if GetInBackpack() then
-        print(GetUniqueName()..' taken from backpack')
         SetInBackpack(false)
         thisEntity:SetParent(nil, '')
         StartSoundEventFromPosition(RetrieveSound, thisEntity:GetOrigin())
         DoEntFireByInstanceHandle(thisEntity, 'FireUser2', '', 0, nil, nil)
     end
 end
+
 -- Function called by this entity on attached output with the same name.
 function OnPhysGunDrop()
-    print(GetUniqueName()..' dropped')
     if GetCanStore() then
         -- Item will be put in backpack immediately if touching backpack.
         -- Otherwise we give the item a moment to look for the backpack in case the player missed.
-        print('AlphaOnStore '..tostring(AlphaOnStore))
-        print('TimeToStore '..tostring(TimeToStore))
-        print('RetrieveSound '..tostring(RetrieveSound))
-        print('StoreSound '..tostring(StoreSound))
-        print('fInitialStoreTime '..tostring(fInitialStoreTime))
-        print('sUniqueString '..tostring(sUniqueString))
         --if System:GetPrivateScriptScope():IsTouchingBackpack(thisEntity) then
         if GetSystemScope():IsTouchingBackpack(thisEntity) then
-            print(GetUniqueName()..' put in backpack first try')
             StartSoundEventFromPosition(StoreSound, thisEntity:GetOrigin())
             PutInBackpack()
         else
-            print(GetUniqueName()..' attempting to put in backpack')
             fInitialStoreTime = Time()
             thisEntity:SetThink(ContinuousStoreAttempt, 'ContinuousStoreAttempt', 0)
         end
@@ -154,14 +134,12 @@ end
 -- Attempts to collide with the backpack constantly to allow throwing items behind
 function ContinuousStoreAttempt()
     if (Time() - fInitialStoreTime) > TimeToStore then
-            --print('Ran out of store attempt time')
         return nil
     end
 
     --if System:GetPrivateScriptScope():IsTouchingBackpack(thisEntity) then
     if GetSystemScope():IsTouchingBackpack(thisEntity) then
         -- Sound plays here so PutInBackpack can force without audio
-            --print('Hit backpack, storing')
         StartSoundEventFromPosition(StoreSound, thisEntity:GetOrigin())
         PutInBackpack()
         return nil
@@ -171,50 +149,41 @@ function ContinuousStoreAttempt()
     return 0
 end
 
--- Puts the item in or out of backpack state and moves it.
----@param inPack boolean
-function SetInBackpack(inPack)
-    print(GetUniqueName()..' setting in backpack to '..tostring(inPack))
-    thisEntity:Attribute_SetIntValue('IsInBackpack', inPack and 1 or 0)
-    if inPack then
-        --System:GetPrivateScriptScope():MoveItemToVirtualBackpack(thisEntity)
-        GetSystemScope():MoveItemToVirtualBackpack(thisEntity)
-        thisEntity:SetRenderAlpha(AlphaOnStore)
-        local children = thisEntity:GetChildren()
-        for k,v in ipairs(children) do
-            v:SetRenderAlpha(AlphaOnStore)
-        end
-    else
-        thisEntity:SetRenderAlpha(255)
-        local children = thisEntity:GetChildren()
-        for k,v in ipairs(children) do
-            v:SetRenderAlpha(255)
-        end
-    end
-end
 -- Returns if the item is inside the backpack.
 function GetInBackpack()
     return thisEntity:Attribute_GetIntValue('IsInBackpack', 0) == 1
 end
 
----@param canStore boolean
-function SetCanStore(canStore)
-    thisEntity:Attribute_SetIntValue('CanStore', canStore and 1 or 0)
+-- Puts the item in or out of backpack state and moves it.
+---@param inPack boolean
+function SetInBackpack(inPack)
+    thisEntity:Attribute_SetIntValue('IsInBackpack', inPack and 1 or 0)
+    if inPack then
+        GetSystemScope():MoveItemToVirtualBackpack(thisEntity)
+        thisEntity:SetRenderAlpha(AlphaOnStore)
+        local children = thisEntity:GetChildren()
+        for _,c in ipairs(children) do
+            c:SetRenderAlpha(AlphaOnStore)
+        end
+    else
+        thisEntity:SetRenderAlpha(255)
+        local children = thisEntity:GetChildren()
+        for _,c in ipairs(children) do
+            c:SetRenderAlpha(255)
+        end
+    end
 end
+
+-- Returns true if the item is allowed to be stored in the backpack.
 function GetCanStore()
     return thisEntity:Attribute_GetIntValue('CanStore', 1) == 1
 end
 
---[[ function UpdateSystemEntity()
-    System = Entities:FindByName(nil, '@backpack_system')
-    print('Found system '..tostring(System))
-    if System == nil then
-        print('Failed to find backpack system. Make sure name has not been changed.')
-        return nil
-    end
-
-    return System
-end ]]
+-- Allow backpack to be stored with true or disallow with false.
+---@param canStore boolean
+function SetCanStore(canStore)
+    thisEntity:Attribute_SetIntValue('CanStore', canStore and 1 or 0)
+end
 
 function GetSystemScope()
     return Entities:FindByName(nil, '@backpack_system'):GetPrivateScriptScope()
@@ -222,8 +191,9 @@ end
 
 -- Returns entity name with sUniqueString on the end if it has one.
 function GetUniqueName()
-    return thisEntity:GetName()..sUniqueString
+    return thisEntity:GetName()..tostring(sUniqueString)
 end
+
 -- Returns the unique name and the model name.
 function DebugString()
     return GetUniqueName()..' , '..thisEntity:GetModelName()
