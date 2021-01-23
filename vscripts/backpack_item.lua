@@ -120,11 +120,7 @@ function OnPhysGunDrop()
     if GetCanStore() then
         -- Item will be put in backpack immediately if touching backpack.
         -- Otherwise we give the item a moment to look for the backpack in case the player missed.
-        --if System:GetPrivateScriptScope():IsTouchingBackpack(thisEntity) then
-        if GetSystemScope():IsTouchingBackpack(thisEntity) then
-            StartSoundEventFromPosition(StoreSound, thisEntity:GetOrigin())
-            PutInBackpack()
-        else
+        if not AttemptToStore() then
             fInitialStoreTime = Time()
             thisEntity:SetThink(ContinuousStoreAttempt, 'ContinuousStoreAttempt', 0)
         end
@@ -137,16 +133,22 @@ function ContinuousStoreAttempt()
         return nil
     end
 
-    --if System:GetPrivateScriptScope():IsTouchingBackpack(thisEntity) then
-    if GetSystemScope():IsTouchingBackpack(thisEntity) then
-        -- Sound plays here so PutInBackpack can force without audio
-        StartSoundEventFromPosition(StoreSound, thisEntity:GetOrigin())
-        PutInBackpack()
+    if AttemptToStore() then
         return nil
     end
 
     -- Return immediate retry
     return 0
+end
+
+function AttemptToStore()
+    if GetSystemScope():StorageCheck(thisEntity) then
+        -- Sound plays here so PutInBackpack can force without audio
+        StartSoundEventFromPosition(StoreSound, thisEntity:GetOrigin())
+        PutInBackpack()
+        return true
+    end
+    return false
 end
 
 -- Returns if the item is inside the backpack.

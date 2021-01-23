@@ -33,6 +33,26 @@ ItemUpForRetrieval = nil
 -- User functions --
 --================--
 
+-- Disabled backpack storage of any item.
+function DisableAllBackpackStorage()
+    thisEntity:Attribute_SetIntValue('AllBackpackStorageEnabled', 0)
+end
+
+-- Enables backpack storage of items. Specific items disabled will stay disabled.
+function EnableAllBackpackStorage()
+    thisEntity:Attribute_SetIntValue('AllBackpackStorageEnabled', 1)
+end
+
+-- Disables retrieval of any item.
+function DisableAllBackpackRetrieval()
+    thisEntity:Attribute_SetIntValue('AllBackpackRetrievalEnabled', 0)
+end
+
+-- Enables retrieval of items. Specific items disabled will stay disabled.
+function EnableAllBackpackRetrieval()
+    thisEntity:Attribute_SetIntValue('AllBackpackRetrievalEnabled', 1)
+end
+
 -- Must be called using RunScriptCode with the targetname of the info_target in single quotes, e.g.
 -- SetVirtualBackpackTarget('@virtual_backpack_target')
 -- DO NOT USE DOUBLE QUOTES IN YOUR OUTPUT/OVERRIDE, THIS MAY CORRUPT YOUR FILE
@@ -73,9 +93,20 @@ function Activate(activateType)
 end
 
 -- Returns if the given entity is touching the backpack.
+---@param _ nil
 ---@param ent userdata
-function IsTouchingBackpack(_, ent)
+function IsTouchingBackpack(ent)
     return GetBackpackTrigger():IsTouching(ent)
+end
+
+-- Go-between function from backpack_item to backpack_system to allow attribute check.
+---@param _ nil
+---@param ent userdata
+function StorageCheck(_, ent)
+    if thisEntity:Attribute_GetIntValue('AllBackpackStorageEnabled', 1) then
+        return IsTouchingBackpack(ent)
+    end
+    return false
 end
 
 -- Disables the player backpack, no longer allowing ammo retrieval.
@@ -167,15 +198,17 @@ end
 -- Called externally in game by the backpack trigger.
 ---@param data table
 function DoBackpackRetrieval(data)
-    local hand = data.activator
-    if hand:GetClassname() == 'hl_prop_vr_hand' then
-        for i = #RetrievalStack, 1, -1 do
-            if RetrievalStack[i]:GetPrivateScriptScope():GetInBackpack() then
-                MoveItemToRetrievalHand(RetrievalStack[i], hand)
-                DisableRealBackpack()
-                FireShortHaptic(hand, 1)
-                ItemUpForRetrieval = RetrievalStack[i]
-                break
+    if thisEntity:Attribute_GetIntValue('AllBackpackRetrievalEnabled', 1) then
+        local hand = data.activator
+        if hand:GetClassname() == 'hl_prop_vr_hand' then
+            for i = #RetrievalStack, 1, -1 do
+                if RetrievalStack[i]:GetPrivateScriptScope():GetInBackpack() then
+                    MoveItemToRetrievalHand(RetrievalStack[i], hand)
+                    DisableRealBackpack()
+                    FireShortHaptic(hand, 1)
+                    ItemUpForRetrieval = RetrievalStack[i]
+                    break
+                end
             end
         end
     end
