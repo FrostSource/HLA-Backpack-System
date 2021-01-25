@@ -33,7 +33,7 @@ ItemUpForRetrieval = nil
 -- User functions --
 --================--
 
--- Disabled backpack storage of any item.
+-- Disabled backpack storage of any item, globally.
 function DisableAllBackpackStorage()
     thisEntity:Attribute_SetIntValue('AllBackpackStorageEnabled', 0)
 end
@@ -43,7 +43,7 @@ function EnableAllBackpackStorage()
     thisEntity:Attribute_SetIntValue('AllBackpackStorageEnabled', 1)
 end
 
--- Disables retrieval of any item.
+-- Disables retrieval of any item, globally.
 function DisableAllBackpackRetrieval()
     thisEntity:Attribute_SetIntValue('AllBackpackRetrievalEnabled', 0)
 end
@@ -199,7 +199,7 @@ end
 function DoBackpackRetrieval(data)
     if thisEntity:Attribute_GetIntValue('AllBackpackRetrievalEnabled', 1) then
         local hand = data.activator
-        if hand:GetClassname() == 'hl_prop_vr_hand' then
+        if hand:GetClassname() == 'hl_prop_vr_hand' and not GetHandHolding(hand:GetHandID()) then
             for i = #RetrievalStack, 1, -1 do
                 if RetrievalStack[i]:GetPrivateScriptScope():GetInBackpack() then
                     MoveItemToRetrievalHand(RetrievalStack[i], hand)
