@@ -2,6 +2,8 @@
 # HLA-Backpack-System
 Arbitrary prop_physics storage in Alyx's backpack. Completely open source and public domain.
 
+The current example is messy and not finished. May not represent the system.
+
 ### Features:
 * Any prop_physics placeable in backpack just like ammo or resin.
 * Programmatically choose where the player can take items out using Hammer's I/O system.
