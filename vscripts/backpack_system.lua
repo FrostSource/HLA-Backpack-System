@@ -232,9 +232,14 @@ end
 ---@param ent userdata
 ---@param hand userdata
 function MoveItemToRetrievalHand(ent, hand)
-    local pos = hand:TransformPointEntityToWorld(Vector(-3, 3, -2))
+    local bounds = ent:GetBounds()
+	local len = (bounds.Maxs - bounds.Mins):Length() / 2
+    local pos = hand:TransformPointEntityToWorld(Vector(-3, len, -2))
     ent:SetOrigin(pos)
     ent:SetParent(hand, '')
+    ent:SetLocalAngles(0, -80, 55)
+	-- Exact angle wanted
+	---0.62983322143555, -78.637756347656, 55.330642700195
 end
 
 -- Moves a given entity to the virtual backpack location in the world.
