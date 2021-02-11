@@ -1,0 +1,4 @@
+_bakeresourcecache/
+*bakeresourcecache.vpk
+
+scripts/vscripts/backpack_system_helpers.lua
