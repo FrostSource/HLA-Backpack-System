@@ -1,0 +1,22 @@
+{
+    "Lua.diagnostics.globals": [
+        "Vector",
+        "thisEntity",
+        "Entities",
+        "ListenToGameEvent",
+        "DoEntFire",
+        "Convars",
+        "IsValidEntity",
+        "RotatePosition",
+        "QAngle",
+        "RotateOrientation",
+        "DoEntFireByInstanceHandle",
+        "StartSoundEventFromPosition",
+        "Time",
+        "CalcDistanceBetweenEntityOBB",
+        "StartSoundEvent",
+        "debugoverlay",
+        "VectorToAngles",
+        "AnglesToVector"
+    ]
+}

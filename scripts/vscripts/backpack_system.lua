@@ -3,11 +3,6 @@
 -- User variables --
 --================--
 
--- Time in seconds between each retrieval attempt.
--- Less is more accuracy but may bring performance impact.
--- Set to 0 for real time checking.
-local RetrievalThinkTime = 0.1
-
 -- Default name of the virtual backpack info_target.
 local VirtualBackpackTarget = '@virtual_backpack_target'
 
@@ -78,12 +73,6 @@ end
 
 -- Called externally by game.
 function Activate(activateType)
-
-    if activateType == 2 then
-        if thisEntity:Attribute_GetIntValue('DoingRetrievalThink', 0) == 1 then
-            thisEntity:SetThink(RetrievalThink, 'RetrievalThink', RetrievalThinkTime)
-        end
-    end
 
     -- Parent backpack trigger to player and set offset
     thisEntity:SetThink(function()
@@ -269,16 +258,16 @@ function MoveItemToRetrievalHand(ent, hand)
     --local bounds = ent:GetBounds();
 	--local len = (bounds.Maxs - bounds.Mins):Length() / 3;
     --local pos = hand:TransformPointEntityToWorld(Vector(-3, 3*side, -2));
-    local pos = hand:TransformPointEntityToWorld(ent:GetPrivateScriptScope():GetGrabOffset()*Vector(1,-1,1))
-    if side == -1 then
-        pos = RotatePosition(hand:GetOrigin(), QAngle(0,0,180), pos)
-    end
+    local pos = hand:TransformPointEntityToWorld(ent:GetPrivateScriptScope():GetGrabOffset()*Vector(1,side,1))
+    --if side == -1 then
+    --    pos = RotatePosition(hand:GetOrigin(), QAngle(0,0,180), pos)
+    --end
     ent:SetOrigin(pos)
-    local angles
-    angles = RotateOrientation(hand:GetAngles(), ent:GetPrivateScriptScope():GetGrabAngles())
-    if side == -1 then
-        angles = RotateOrientation(angles, QAngle(0, 180, 0))
-    end
+    --local angles
+    --angles = RotateOrientation(hand:GetAngles(), ent:GetPrivateScriptScope():GetGrabAngles())
+    --if side == -1 then
+    --    angles = RotateOrientation(angles, QAngle(0, 180, 0))
+    --end
     --ent:SetAngles(angles.x,angles.y,angles.z)
     ent:SetAngles(hand:GetAngles().x,hand:GetAngles().y,hand:GetAngles().z)
     ent:SetParent(hand, '')
