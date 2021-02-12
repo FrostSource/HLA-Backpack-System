@@ -8,15 +8,19 @@ The current example is messy and not finished. May not represent the system.
 * Any prop_physics placeable in backpack just like ammo or resin.
 * Programmatically choose where the player can take items out using Hammer's I/O system.
 * Custom backpack sounds per-item supported.
+* Grab offset/angle per-item supported (see [Important Issues](#important-issues))
 * Save/Load support.
 * Modify size/shape of the backpack trigger in hammer.
 
-## Installation
-Files from **maps\prefabs\\** go into your addons content folder:
-**Half-Life Alyx\content\hlvr_addons\<your addon>\maps\prefabs\**
+## Important Issues
+Due to my poor maths ability and the Quaternion class being broken in VScript, custom grab angles are not mirrored to the left hand. If anyone knows a solution to this please start an issue.
 
-Files from **vscripts\\** go into your addons game folder:
-**Half-Life Alyx\game\hlvr_addons\<your addon>\scripts\vscripts\**
+## Installation
+Files from **maps\prefabs\\** go into your addons content folder:\
+**Half-Life Alyx\content\hlvr_addons\\\<your addon>\maps\prefabs\\**
+
+Files from **scripts\\** go into your addons game folder:\
+**Half-Life Alyx\game\hlvr_addons\\\<your addon>\scripts\\**
 
 ## Usage
 ### Setting up the system
@@ -71,3 +75,11 @@ USE SINGLE QUOTES ONLY. USING DOUBLE QUOTES IN YOUR OUTPUT/OVERRIDE MAY CORRUPT 
 *Fires when the player puts this item in their backpack.*
 * **Output > User2**
 *Fires when the player retrieves this item from their backpack.*
+### Custom Keys
+*StoreSound (string) - The path to the sound the item will play when put in backpack.
+*RetrieveSound (string) - The path to the sound the item will play when taken from backpack.
+*GrabOffset (string) - A vector3 of offset values (x,y,z) defining the offset from the hand that the object will be when retrieved. Each number separated by a space.
+*GrabAngle (string) - A vector3 of euler angles (pitch,yaw,roll) defining the rotation relative to the hand that the object will be when retrieved. Each number separated by a space.
+
+## Backpack System Offset Helper
+**\maps\backpack_system_offset_helper.vmap** is a work-in-progress map to aid the process of finding custom grab offset/angle values for any prop.

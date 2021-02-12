@@ -1,4 +1,7 @@
 
+--TODO: Save/restore user defined alpha
+
+
 --================--
 -- User variables --
 --================--
@@ -13,7 +16,7 @@ local DefaultRetrieveSound = 'Inventory.BackpackGrabItemResin'
 local DefaultStoreSound = 'Inventory.DepositItem'
 
 -- Defines how transparent item is in backpack. 0=invisible, 255=opaque (mostly for debug)
-local AlphaOnStore = 100
+local AlphaOnStore = 0
 
 
 --==================--
@@ -22,6 +25,7 @@ local AlphaOnStore = 100
 
 local fInitialStoreTime = 0
 local sUniqueString = ''
+CacheHealth = CacheHealth or 0
 
 
 --=======================--
@@ -203,14 +207,17 @@ end
 function SetInBackpack(inPack)
     thisEntity:Attribute_SetIntValue('IsInBackpack', inPack and 1 or 0)
     if inPack then
-        GetSystemScope():MoveItemToVirtualBackpack(thisEntity)
+        CacheHealth = thisEntity:GetHealth()
+        thisEntity:SetHealth(99999)
         thisEntity:SetRenderAlpha(AlphaOnStore)
+        GetSystemScope():MoveItemToVirtualBackpack(thisEntity)
         local children = thisEntity:GetChildren()
         for _,c in ipairs(children) do
             c:SetRenderAlpha(AlphaOnStore)
         end
         thisEntity:DisableMotion()
     else
+        thisEntity:SetHealth(CacheHealth)
         thisEntity:SetRenderAlpha(255)
         local children = thisEntity:GetChildren()
         for _,c in ipairs(children) do

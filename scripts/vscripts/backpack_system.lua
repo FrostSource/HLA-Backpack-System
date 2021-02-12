@@ -215,7 +215,6 @@ function DoBackpackRetrieval(data)
                 if RetrievalStack[i]:GetPrivateScriptScope():GetInBackpack() then
                     MoveItemToRetrievalHand(RetrievalStack[i], hand)
                     DisableRealBackpack()
-                    --FireShortHaptic(hand, 2)
                     hand:FireHapticPulse(2)
                     ItemUpForRetrieval = RetrievalStack[i]
                     break
@@ -230,7 +229,7 @@ end
 -- Called externally in game by the backpack trigger.
 ---@param data table
 function EndBackpackRetrieval(data)
-    if true then return nil end
+    --if true then return nil end
     local hand = data.activator
     if not IsValidEntity(hand) then return nil end
     if hand:GetClassname() == 'hl_prop_vr_hand' and ItemUpForRetrieval ~= nil then
@@ -243,7 +242,6 @@ function EndBackpackRetrieval(data)
         if ItemUpForRetrieval:GetPrivateScriptScope():GetInBackpack() then
             MoveItemToVirtualBackpack(nil, ItemUpForRetrieval)
             EnableRealBackpack()
-            --FireShortHaptic(nil)
             ItemUpForRetrieval = nil
         end
 
@@ -254,37 +252,27 @@ end
 ---@param ent userdata
 ---@param hand userdata
 function MoveItemToRetrievalHand(ent, hand)
-    local side = hand:GetHandID() == 1 and 1 or -1
-    --local bounds = ent:GetBounds();
-	--local len = (bounds.Maxs - bounds.Mins):Length() / 3;
-    --local pos = hand:TransformPointEntityToWorld(Vector(-3, 3*side, -2));
-    local pos = hand:TransformPointEntityToWorld(ent:GetPrivateScriptScope():GetGrabOffset()*Vector(1,side,1))
-    --if side == -1 then
-    --    pos = RotatePosition(hand:GetOrigin(), QAngle(0,0,180), pos)
-    --end
-    ent:SetOrigin(pos)
-    --local angles
-    --angles = RotateOrientation(hand:GetAngles(), ent:GetPrivateScriptScope():GetGrabAngles())
-    --if side == -1 then
-    --    angles = RotateOrientation(angles, QAngle(0, 180, 0))
-    --end
-    --ent:SetAngles(angles.x,angles.y,angles.z)
-    ent:SetAngles(hand:GetAngles().x,hand:GetAngles().y,hand:GetAngles().z)
+    local side = hand:GetHandID()
+    local pos = ent:GetPrivateScriptScope():GetGrabOffset()
+    -- Mirror offset if it's left hand
+    if side == 0 then
+        local axis = Vector(0, 1, 0)
+        pos = pos - 2 * pos:Dot(axis) * axis
+    end
+    -- is there a way to move instantly without collision?
+    ent:SetOrigin(hand:TransformPointEntityToWorld(pos))
+    -- Rotate hand angle by grab angle to keep angle consistent every time
+    -- Angle is not mirrored to the left hand like offset above, how can this be done?
+    local angle = RotateOrientation(hand:GetAngles(), ent:GetPrivateScriptScope():GetGrabAngles())
+    ent:SetAngles(angle.x,angle.y,angle.z)
     ent:SetParent(hand, '')
-    --ent:SetLocalAngles(0, 0, 0);
-    --ent:SetLocalAngles(0, -80, 55);
-    --local calctest = CalcDistanceBetweenEntityOBB(hand, ent);
-    --if calctest > 0 then
-    --    ent:SetLocalOrigin(ent:GetLocalOrigin() - Vector(0,calctest*side,0));
-    --end
-	-- Exact angle wanted
-	---0.62983322143555, -78.637756347656, 55.330642700195
 end
 
 -- Moves a given entity to the virtual backpack location in the world.
 ---@param _ nil
 ---@param ent userdata
 function MoveItemToVirtualBackpack(_, ent)
+    --if true then return end
     ent:SetParent(nil, '')
     local virtual = Entities:FindByName(nil, VirtualBackpackTarget)
     if virtual ~= nil then
