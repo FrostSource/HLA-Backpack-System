@@ -2,7 +2,9 @@
 # HLA-Backpack-System
 Arbitrary prop_physics storage in Alyx's backpack. Completely open source and public domain.
 
-The current example is messy and not finished. May not represent the system.
+The current example is still a work in progress with more to come.
+
+**\maps\backpack_system_offset_helper.vmap** is a work-in-progress map to aid the process of finding custom grab offset/angle values for any prop.
 
 ### Features:
 * Any prop_physics placeable in backpack just like ammo or resin.
@@ -80,6 +82,3 @@ USE SINGLE QUOTES ONLY. USING DOUBLE QUOTES IN YOUR OUTPUT/OVERRIDE MAY CORRUPT 
 *RetrieveSound (string) - The path to the sound the item will play when taken from backpack.
 *GrabOffset (string) - A vector3 of offset values (x,y,z) defining the offset from the hand that the object will be when retrieved. Each number separated by a space.
 *GrabAngle (string) - A vector3 of euler angles (pitch,yaw,roll) defining the rotation relative to the hand that the object will be when retrieved. Each number separated by a space.
-
-## Backpack System Offset Helper
-**\maps\backpack_system_offset_helper.vmap** is a work-in-progress map to aid the process of finding custom grab offset/angle values for any prop.
