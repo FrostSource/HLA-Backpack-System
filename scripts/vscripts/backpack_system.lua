@@ -202,7 +202,7 @@ end
 -- Called externally in game by the backpack trigger.
 ---@param data table
 function DoBackpackRetrieval(data)
-    if thisEntity:Attribute_GetIntValue('AllBackpackRetrievalEnabled', 0) == 1 then
+    if thisEntity:Attribute_GetIntValue('AllBackpackRetrievalEnabled', 1) == 1 then
         local hand = data.activator
         if hand:GetClassname() == 'hl_prop_vr_hand' and not GetHandHolding(hand:GetHandID()) then
             for i = #RetrievalStack, 1, -1 do
