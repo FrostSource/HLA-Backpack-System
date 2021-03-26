@@ -49,6 +49,7 @@ function EnableBackpackRetrieval()
     --UpdateSystemEntity()
     --System:GetPrivateScriptScope():MoveToTopOfRetrievalStack(thisEntity)
     GetSystemScope():MoveToTopOfRetrievalStack(thisEntity)
+    thisEntity:Attribute_SetIntValue('BackpackRetrievalEnabled', 1)
 end
 -- Tells the system to disallow this item from being retrieved.
 -- Should be called with OnEndTouch trigger when the player leaves the are the item is used in.
@@ -56,6 +57,7 @@ function DisableBackpackRetrieval()
     --UpdateSystemEntity()
     --System:GetPrivateScriptScope():RemoveFromRetrievalStack(thisEntity)
     GetSystemScope():RemoveFromRetrievalStack(thisEntity)
+    thisEntity:Attribute_SetIntValue('BackpackRetrievalEnabled', 0)
 end
 
 -- Allowing/disallowing the item to be stored by putting it over the shoulder.
@@ -138,6 +140,9 @@ function Activate(activateType)
     if activateType == 2 then
         if thisEntity:Attribute_GetIntValue('IsInBackpack', 0) == 1 then
             SetInBackpack(true)
+        end
+        if thisEntity:Attribute_GetIntValue('BackpackRetrievalEnabled', 0) == 1 then
+            EnableBackpackRetrieval()
         end
     end
 
