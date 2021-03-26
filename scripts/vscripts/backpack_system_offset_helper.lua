@@ -29,28 +29,28 @@ end
 
 function ChangePitch(amount)
     thisEntity:Attribute_SetIntValue('Pitch',thisEntity:Attribute_GetIntValue('Pitch',0) + amount)
-    UpdateDisplay()
+    UpdateAll()
 end
 function ChangeYaw(amount)
     thisEntity:Attribute_SetIntValue('Yaw',thisEntity:Attribute_GetIntValue('Yaw',0) + amount)
-    UpdateDisplay()
+    UpdateAll()
 end
 function ChangeRoll(amount)
     thisEntity:Attribute_SetIntValue('Roll',thisEntity:Attribute_GetIntValue('Roll',0) + amount)
-    UpdateDisplay()
+    UpdateAll()
 end
 
 function ChangeOffsetX(amount)
     thisEntity:Attribute_SetIntValue('OffsetX',thisEntity:Attribute_GetIntValue('OffsetX',0) + amount)
-    UpdateDisplay()
+    UpdateAll()
 end
 function ChangeOffsetY(amount)
     thisEntity:Attribute_SetIntValue('OffsetY',thisEntity:Attribute_GetIntValue('OffsetY',0) + amount)
-    UpdateDisplay()
+    UpdateAll()
 end
 function ChangeOffsetZ(amount)
     thisEntity:Attribute_SetIntValue('OffsetZ',thisEntity:Attribute_GetIntValue('OffsetZ',0) + amount)
-    UpdateDisplay()
+    UpdateAll()
 end
 
 -- Not usable yet
@@ -62,7 +62,7 @@ function GetAngleFromHand(handid)
     thisEntity:Attribute_SetIntValue('Pitch',r.x)
     thisEntity:Attribute_SetIntValue('Yaw',r.y)
     thisEntity:Attribute_SetIntValue('Roll',r.z)
-    UpdateDisplay()
+    UpdateAll()
 end
 
 -- Not usable yet
@@ -74,27 +74,37 @@ function GetOffsetFromHand(handid)
     thisEntity:Attribute_SetIntValue('OffsetX',o.x)
     thisEntity:Attribute_SetIntValue('OffsetY',o.y)
     thisEntity:Attribute_SetIntValue('OffsetZ',o.z)
-    UpdateDisplay()
+    UpdateAll()
 end
 
 function ResetAngle()
     thisEntity:Attribute_SetIntValue('Pitch',0)
     thisEntity:Attribute_SetIntValue('Yaw',0)
     thisEntity:Attribute_SetIntValue('Roll',0)
-    UpdateDisplay()
+    UpdateAll()
 end
 
 function ResetOffset()
     thisEntity:Attribute_SetIntValue('OffsetX',0)
     thisEntity:Attribute_SetIntValue('OffsetY',0)
     thisEntity:Attribute_SetIntValue('OffsetZ',0)
-    UpdateDisplay()
+    UpdateAll()
 end
 
 function UnparentTargetEntity()
     if not IsValidEntity(TargetEntity) then return end
 
     TargetEntity:SetParent(nil,'')
+end
+
+function UpdateAll()
+    UpdateTargetGrabValues()
+    UpdateDisplay()
+end
+
+function UpdateTargetGrabValues()
+    TargetEntity:GetPrivateScriptScope():SetGrabAngle(thisEntity:Attribute_GetIntValue('Pitch',0)..' '..thisEntity:Attribute_GetIntValue('Yaw',0)..' '..thisEntity:Attribute_GetIntValue('Roll',0))
+    TargetEntity:GetPrivateScriptScope():SetGrabOffset(thisEntity:Attribute_GetIntValue('OffsetX',0)..' '..thisEntity:Attribute_GetIntValue('OffsetY',0)..' '..thisEntity:Attribute_GetIntValue('OffsetZ',0))
 end
 
 function UpdateDisplay()
