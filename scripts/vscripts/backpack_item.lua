@@ -1,6 +1,10 @@
 
---TODO: Save/restore user defined alpha
+--=====--
+-- I/O --
+--=====--
 
+-- User1 = Item was put inside backpack.
+-- User2 = Item was retrieved from backpack.
 
 --================--
 -- User variables --
