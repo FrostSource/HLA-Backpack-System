@@ -195,6 +195,7 @@ function SetInBackpack(inPack)
     thisEntity:Attribute_SetIntValue('IsInBackpack', inPack and 1 or 0)
     if inPack then
         thisEntity:Attribute_SetIntValue('CacheHealth', thisEntity:GetHealth())
+        thisEntity:Attribute_SetIntValue('CacheAlpha', thisEntity:GetRenderAlpha())
         thisEntity:SetHealth(99999)
         thisEntity:SetRenderAlpha(AlphaOnStore)
         GetSystemScope():MoveItemToVirtualBackpack(thisEntity)
@@ -205,7 +206,7 @@ function SetInBackpack(inPack)
         thisEntity:DisableMotion()
     else
         thisEntity:SetHealth(thisEntity:Attribute_GetIntValue('CacheHealth',1))
-        thisEntity:SetRenderAlpha(255)
+        thisEntity:SetRenderAlpha(thisEntity:Attribute_GetIntValue('CacheAlpha',255))
         local children = thisEntity:GetChildren()
         for _,c in ipairs(children) do
             c:SetRenderAlpha(255)
