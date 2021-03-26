@@ -108,26 +108,8 @@ function Spawn(spawnkeys)
         SetRetrieveSound(DefaultRetrieveSound)
     end
 
-    local pitch,yaw,roll
-    value = spawnkeys:GetValue('GrabAngle')
-    if type(value) == 'string' then
-        local t = SplitString(value)
-        pitch,yaw,roll = tonumber(t[1]), tonumber(t[2]), tonumber(t[3])
-    end
-    thisEntity:Attribute_SetIntValue('GrabPitch', pitch or 0)
-    thisEntity:Attribute_SetIntValue('GrabYaw', yaw or 0)
-    thisEntity:Attribute_SetIntValue('GrabRoll', roll or 0)
-
-    local x,y,z
-    value = spawnkeys:GetValue('GrabOffset')
-    if type(value) == 'string' then
-        local t = SplitString(value)
-        x,y,z = tonumber(t[1]), tonumber(t[2]), tonumber(t[3])
-        --print('custom item with offset:',x,y,z)
-    end
-    thisEntity:Attribute_SetIntValue('GrabX', x or -3)
-    thisEntity:Attribute_SetIntValue('GrabY', y or 3)
-    thisEntity:Attribute_SetIntValue('GrabZ', z or -2)
+    SetGrabAngle(spawnkeys:GetValue('GrabAngle'))
+    SetGrabOffset(spawnkeys:GetValue('GrabOffset'))
 
     -- Source seems to save/restore these outputs to they only need to be
     -- added once on spawn.
@@ -247,7 +229,7 @@ function GetSystemScope()
     return Entities:FindByName(nil, '@backpack_system'):GetPrivateScriptScope()
 end
 
-function GetGrabAngles()
+function GetGrabAngle()
     return QAngle(
         thisEntity:Attribute_GetIntValue('GrabPitch',0),
         thisEntity:Attribute_GetIntValue('GrabYaw',0),
@@ -261,6 +243,35 @@ function GetGrabOffset()
         thisEntity:Attribute_GetIntValue('GrabY',3),
         thisEntity:Attribute_GetIntValue('GrabZ',-2)
     )
+end
+
+---Sets the angle the item will be rotated to relative to the hand retrieving it.
+---Format: 'Pitch Yaw Roll' e.g. '90 180 0'
+---@param vector string
+function SetGrabAngle(vector)
+    local pitch,yaw,roll
+    if type(vector) == 'string' then
+        local t = SplitString(vector)
+        pitch,yaw,roll = tonumber(t[1]), tonumber(t[2]), tonumber(t[3])
+    end
+    thisEntity:Attribute_SetIntValue('GrabPitch', pitch or 0)
+    thisEntity:Attribute_SetIntValue('GrabYaw', yaw or 0)
+    thisEntity:Attribute_SetIntValue('GrabRoll', roll or 0)
+end
+
+---Sets the offset the item will be positioned relative to the hand retrieving it.
+---Format: 'x y z' e.g. '-1 3.5 0'
+---@param vector string
+function SetGrabOffset(vector)
+    local x,y,z
+    if type(vector) == 'string' then
+        local t = SplitString(vector)
+        x,y,z = tonumber(t[1]), tonumber(t[2]), tonumber(t[3])
+        --print('custom item with offset:',x,y,z)
+    end
+    thisEntity:Attribute_SetIntValue('GrabX', x or -3)
+    thisEntity:Attribute_SetIntValue('GrabY', y or 3)
+    thisEntity:Attribute_SetIntValue('GrabZ', z or -2)
 end
 
 ---https://stackoverflow.com/a/7615129
