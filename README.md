@@ -18,10 +18,10 @@ The current example is still a work in progress with more to come.
 Due to my poor maths ability and the Quaternion class being broken in VScript, custom grab angles are not mirrored to the left hand. If anyone knows a solution to this please start an issue.
 
 ## Installation
-Files from **maps\prefabs\\** go into your addons content folder:\
+Files from **maps\prefabs\\** go into your addons `content` folder:\
 **Half-Life Alyx\content\hlvr_addons\\\<your addon>\maps\prefabs\\**
 
-Files from **scripts\\** go into your addons game folder:\
+Files from **scripts\\** go into your addons `game` folder:\
 **Half-Life Alyx\game\hlvr_addons\\\<your addon>\scripts\\**
 
 ## Usage
