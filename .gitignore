@@ -3,3 +3,4 @@ _bakeresourcecache/
 
 scripts/vscripts/backpack_system_helpers.lua
 scripts/vscripts/mirror.lua
+__test*
